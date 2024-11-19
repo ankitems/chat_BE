@@ -21,34 +21,27 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { userName, password } = req.body;
-
-  if (!userName || !password) {
-    return res
-      .status(400)
-      .json({ message: "Username and password are required." });
-  }
-
   try {
-    const data = await authenticateUser(userName, password);
-    if (data.length) {
-      res.status(200).json({ message: "Login successful.", data: data });
-    }
+    const data = await authenticateUser(req, res);
+    return data
+
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    console.error(error);
+    return res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
 
-export const getUserById = async (req, res) => {
-  const { userId } = req.params;
 
+export const getUserByUserName = async (req, res) => {
+  const { userName } = req.params;
   try {
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findOne({userName});
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
     res.json(user);
   } catch (error) {
+    console.log("error", error)
     res.status(500).json({ error: "Failed to retrieve user" });
   }
 };

@@ -23,14 +23,9 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Connect to MongoDB
 connectDB();
-
-// Define routes
 app.use(router);
 
-// Socket.io connection
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
@@ -59,14 +54,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Handle user disconnection
   socket.on("disconnect", () => {
     console.log("A user disconnected:", socket.id);
   });
 });
 
-// Start the server
-const port = 7000;
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+
+
+server.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
